@@ -1,6 +1,7 @@
 import openpyxl
 import pandas as pd
 import datetime
+import subprocess
 
 def excel_range_to_styled_html(file_path, range_name, output_html_path):
   """Opens an Excel file, reads a specific named range,
@@ -111,5 +112,22 @@ if __name__ == "__main__":
 
   try:
     excel_range_to_styled_html(file_path, range_name, output_html_path)
+
+    print("Pushing update to GitHub...")
+
+    subprocess.run(["git", "add", output_html_path], check = True)
+
+    subprocess.run(
+        [
+            "git",
+            "commit",
+            "-m",
+            "Automated update: refreshed table data",
+        ],
+        check = True,
+    )
+
+    subprocess.run(["git", "push", "origin", "main"], check = True)
+    print("Successfully updated and pushed data to GitHub!")
   except Exception as e:
     print(f"Error: {e}")
